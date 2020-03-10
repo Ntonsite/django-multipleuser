@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from multiple.models import User, HRProfile, InternProfile
 # Register your models here.
 
