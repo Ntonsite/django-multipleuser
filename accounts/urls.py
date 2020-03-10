@@ -6,4 +6,4 @@ urlpatterns = [
 ]
 admin.site.site_header = 'User Portal Admin'
 admin.site.site_title  = 'User Management Portal'
-admin.site.index_title = 'Welcome to User Management Portal' 
+admin.site.index_title = 'Welcome to VET, User Management Portal' 

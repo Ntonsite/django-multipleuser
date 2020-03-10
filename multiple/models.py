@@ -5,29 +5,42 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    is_intern = models.BooleanField(default=True)
+    is_customer = models.BooleanField(default=True)
+    is_farmer   = models.BooleanField(default=False)
+    is_vet   = models.BooleanField(default=False)
+    phoneNumber = models.CharField(max_length=20, blank=True)
 
-class InternProfile(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='intern_profile')
+class VetProfile(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='vet_profile')
 	bio = models.CharField(max_length=30, blank=True)
+	specialistIn = models.CharField(max_length=30, blank=True)
+	experience = models.CharField(max_length=30, blank=True)
+	rating = models.CharField(max_length=30, blank=True)
 	location = models.CharField(max_length=30, blank=True)
   
-class HRProfile(models.Model):
-  	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='hr_profile')
+class CustomerProfile(models.Model):
+  	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='customer_profile')
+
+class FarmerProfile(models.Model):
+  	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='farmer_profile')
 	
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
 	print('****', created)
-	if instance.is_intern:
-		InternProfile.objects.get_or_create(user = instance)
+	if instance.is_customer:
+		CustomerProfile.objects.get_or_create(user = instance)
+	if instance.is_farmer:
+		FarmerProfile.objects.get_or_create(user = instance)
 	else:
-		HRProfile.objects.get_or_create(user = instance)
+		VetProfile.objects.get_or_create(user = instance)
 	
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
 	print('_-----')	
 	# print(instance.internprofile.bio, instance.internprofile.location)
-	if instance.is_intern:
-		instance.intern_profile.save()
+	if instance.is_customer:
+		instance.customer_profile.save()
+	if instance.is_farmer:
+		instance.farmer_profile.save()
 	else:
-		HRProfile.objects.get_or_create(user = instance)
+		VetProfile.objects.get_or_create(user = instance)
